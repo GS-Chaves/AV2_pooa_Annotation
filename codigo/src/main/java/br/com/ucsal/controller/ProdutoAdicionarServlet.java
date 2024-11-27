@@ -4,6 +4,7 @@ package br.com.ucsal.controller;
 
 import java.io.IOException;
 
+import br.com.ucsal.annotation.Rota;
 import br.com.ucsal.persistencia.HSQLProdutoRepository;
 import br.com.ucsal.service.ProdutoService;
 import jakarta.servlet.RequestDispatcher;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@Rota("/adicionarProduto")
 public class ProdutoAdicionarServlet implements Command {
  private static final long serialVersionUID = 1L;
  

@@ -3,7 +3,11 @@ package br.com.ucsal.controller;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import org.reflections.Reflections;
+
+import br.com.ucsal.annotation.Rota;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,16 +19,39 @@ public class ProdutoController extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
 
-	
+	/*
+	 * @Override public void init() { // Mapeia os comandos
+	 * commands.put("/editarProduto", new ProdutoEditarServlet());
+	 * commands.put("/adicionarProduto", new ProdutoAdicionarServlet());
+	 * commands.put("/excluirProduto", new ProdutoExcluirServlet());
+	 * commands.put("/listarProdutos", new ProdutoListarServlet());
+	 * commands.put("/", new ProdutoListarServlet()); // Roteia também a raiz da
+	 * aplicação para listar produtos // Adicione outros comandos conforme
+	 * necessário }
+	 */
+    
     @Override
     public void init() {
-        // Mapeia os comandos
-        commands.put("/editarProduto", new ProdutoEditarServlet());
-        commands.put("/adicionarProduto", new ProdutoAdicionarServlet());
-        commands.put("/excluirProduto", new ProdutoExcluirServlet());
-        commands.put("/listarProdutos", new ProdutoListarServlet());
-        commands.put("/", new ProdutoListarServlet()); // Roteia também a raiz da aplicação para listar produtos
-        // Adicione outros comandos conforme necessário
+    	Reflections reflections = new Reflections("br.com.ucsal.controller");
+    	
+    	Set<Class<?>> classes = reflections.getTypesAnnotatedWith(Rota.class);
+    	
+    	Class<?>[] classArray = classes.toArray(new Class<?>[0]);
+    	
+    	for(Class<?> clazz : classArray) {
+    		try {
+    			
+    			Rota rota = clazz.getAnnotation(Rota.class);
+    			Object instance = clazz.getDeclaredConstructor().newInstance();
+        		
+    			for (String path : rota.value()) {
+                    commands.put(path, (Command) instance);
+                }
+        		
+    		} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
     }
 
     @Override
