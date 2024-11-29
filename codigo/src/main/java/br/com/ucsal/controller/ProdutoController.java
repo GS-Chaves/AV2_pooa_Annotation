@@ -18,17 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ProdutoController extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
-
-	/*
-	 * @Override public void init() { // Mapeia os comandos
-	 * commands.put("/editarProduto", new ProdutoEditarServlet());
-	 * commands.put("/adicionarProduto", new ProdutoAdicionarServlet());
-	 * commands.put("/excluirProduto", new ProdutoExcluirServlet());
-	 * commands.put("/listarProdutos", new ProdutoListarServlet());
-	 * commands.put("/", new ProdutoListarServlet()); // Roteia também a raiz da
-	 * aplicação para listar produtos // Adicione outros comandos conforme
-	 * necessário }
-	 */
     
     @Override
     public void init() {

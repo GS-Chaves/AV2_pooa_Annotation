@@ -14,27 +14,26 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Rota({"/listarProdutos", "/"})
+@Rota({ "/listarProdutos", "/" })
 public class ProdutoListarServlet implements Command {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 	private ProdutoService produtoService;
 
 	public ProdutoListarServlet() {
-        produtoService = new ProdutoService(new HSQLProdutoRepository());
+		produtoService = new ProdutoService();
 	}
-	
 
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Obtém a lista de produtos
-        List<Produto> produtos = produtoService.listarProdutos();
-        
-        // Define a lista de produtos como atributo da requisição
-        request.setAttribute("produtos", produtos);
-        
-        // Encaminha para a página JSP que exibe a lista de produtos
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtolista.jsp");
-        dispatcher.forward(request, response);
-    }
+	@Override
+	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// Obtém a lista de produtos
+		List<Produto> produtos = produtoService.listarProdutos();
+
+		// Define a lista de produtos como atributo da requisição
+		request.setAttribute("produtos", produtos);
+
+		// Encaminha para a página JSP que exibe a lista de produtos
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/produtolista.jsp");
+		dispatcher.forward(request, response);
+	}
 
 }

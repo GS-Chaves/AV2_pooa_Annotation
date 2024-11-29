@@ -8,52 +8,48 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import br.com.ucsal.model.Produto;
 
-public class MemoriaProdutoRepository implements ProdutoRepository<Produto, Integer>{
+public class MemoriaProdutoRepository implements ProdutoRepository<Produto, Integer> {
 
-    private Map<Integer, Produto> produtos = new HashMap<>();
-    private AtomicInteger currentId = new AtomicInteger(1);
+	private Map<Integer, Produto> produtos = new HashMap<>();
+	private AtomicInteger currentId = new AtomicInteger(1);
 
-    private static MemoriaProdutoRepository instancia;
-    
-    private MemoriaProdutoRepository() {
-    }
-    
-    
-    public static synchronized MemoriaProdutoRepository getInstancia() {
-    	if(instancia == null) {
-    		instancia = new MemoriaProdutoRepository();
-    	}
-    	return instancia;
+	private static MemoriaProdutoRepository instancia;
+
+	private MemoriaProdutoRepository() {
 	}
-    
-    
-    @Override
-    public void adicionar(Produto entidade) {
-        int id = currentId.getAndIncrement();
-        entidade.setId(id);
-        produtos.put(entidade.getId(), entidade);
-    }
-    
-    @Override
-    public void atualizar(Produto entidade) {
-        produtos.put(entidade.getId(), entidade);
-    }
 
+	public static synchronized MemoriaProdutoRepository getInstancia() {
+		if (instancia == null) {
+			instancia = new MemoriaProdutoRepository();
+		}
+		return instancia;
+	}
 
-    @Override
-    public void remover(Integer id) {
-        produtos.remove(id);
-    }
+	@Override
+	public void adicionar(Produto entidade) {
+		int id = currentId.getAndIncrement();
+		entidade.setId(id);
+		produtos.put(entidade.getId(), entidade);
+	}
 
-    @Override
-    public List<Produto> listar() {
-        return new ArrayList<>(produtos.values());
-    }
+	@Override
+	public void atualizar(Produto entidade) {
+		produtos.put(entidade.getId(), entidade);
+	}
 
-    @Override
-    public Produto obterPorID(Integer id) {
-        return produtos.get(id);
-    }
+	@Override
+	public void remover(Integer id) {
+		produtos.remove(id);
+	}
 
+	@Override
+	public List<Produto> listar() {
+		return new ArrayList<>(produtos.values());
+	}
+
+	@Override
+	public Produto obterPorID(Integer id) {
+		return produtos.get(id);
+	}
 
 }

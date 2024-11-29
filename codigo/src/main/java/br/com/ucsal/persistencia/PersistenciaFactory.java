@@ -1,27 +1,46 @@
 package br.com.ucsal.persistencia;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import br.com.ucsal.annotation.Inject;
+import br.com.ucsal.annotation.utils.DBType;
+
 public class PersistenciaFactory {
 
-	public static final int MEMORIA = 0;
-	public static final int HSQL = 1;
-	
-	public static ProdutoRepository<?, ?> getProdutoRepository(int type) {
-		ProdutoRepository<?, ?> produtoRepository;
-		switch (type) {
-		case 0: {
-			produtoRepository = MemoriaProdutoRepository.getInstancia();
-			break;
-		}
-		case 1: {
-			produtoRepository = new HSQLProdutoRepository();
+	private static final Map<DBType, ProdutoRepository<?, ?>> commands = new HashMap<>();
 
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + type);
-		}
-		return produtoRepository;
+	static {
+		commands.put(DBType.HSQLDB, new HSQLProdutoRepository());
+		commands.put(DBType.MEMORIA, MemoriaProdutoRepository.getInstancia());
 	}
-	
-	
+
+	public static <T> T injectDependencies(T instance) {
+		try {
+			Field[] fields = instance.getClass().getDeclaredFields();
+
+			for (Field field : fields) {
+
+				if (field.isAnnotationPresent(Inject.class)) {
+					Inject inject = field.getAnnotation(Inject.class);
+					DBType dbType = inject.value();
+
+					ProdutoRepository<?, ?> repository = commands.get(dbType);
+					if (repository == null) {
+						throw new IllegalStateException("Nenhuma implementação encontrada para " + dbType);
+					}
+
+					field.setAccessible(true);
+					field.set(instance, repository);
+
+				}
+			}
+
+			return instance;
+
+		} catch (Exception e) {
+			throw new RuntimeException("Erro ao injetar dependências para " + instance.getClass().getName(), e);
+		}
+	}
 }

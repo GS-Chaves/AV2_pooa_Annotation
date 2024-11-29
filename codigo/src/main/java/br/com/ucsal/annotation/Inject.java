@@ -6,10 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import br.com.ucsal.annotation.utils.DBType;
+
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
-public @interface Rota {
-
-	String[] value();
+@Target(ElementType.FIELD)
+public @interface Inject {
+	DBType value();
 }

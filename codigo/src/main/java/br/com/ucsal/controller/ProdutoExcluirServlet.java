@@ -16,7 +16,7 @@ public class ProdutoExcluirServlet implements Command {
 	private ProdutoService produtoService;
 
 	public ProdutoExcluirServlet() {
-		produtoService = new ProdutoService(new HSQLProdutoRepository());
+		produtoService = new ProdutoService();
 	}
 
 	@Override
