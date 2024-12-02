@@ -6,6 +6,7 @@ import java.util.Map;
 
 import br.com.ucsal.annotation.Inject;
 import br.com.ucsal.annotation.utils.DBType;
+import br.com.ucsal.util.SingletonListener;
 
 public class PersistenciaFactory {
 
@@ -13,7 +14,7 @@ public class PersistenciaFactory {
 
 	static {
 		commands.put(DBType.HSQLDB, new HSQLProdutoRepository());
-		commands.put(DBType.MEMORIA, MemoriaProdutoRepository.getInstancia());
+		commands.put(DBType.MEMORIA, SingletonListener.getSingleton(MemoriaProdutoRepository.class));
 	}
 
 	public static <T> T injectDependencies(T instance) {
